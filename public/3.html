@@ -3,163 +3,201 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CarmenBBW - Contenido Exclusivo</title>
-    <!-- Font Awesome para íconos -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <title>Subir Videos a Cloudinary</title>
     <style>
-        :root {
-            --color-primario: #FF3B5C;
-            --color-fondo: #1A1A1A;
-            --color-texto: #FFFFFF;
-        }
-
         body {
-            margin: 0;
             font-family: 'Arial', sans-serif;
-            background-color: var(--color-fondo);
-            color: var(--color-texto);
-            min-height: 100vh;
-        }
-
-        /* Header */
-        .header {
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            padding: 1rem;
-            border-bottom: 1px solid #333;
+            color: #333;
         }
-
-        .perfil-info {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 20px;
         }
-
-        .perfil-img {
-            width: 60px;
-            height: 60px;
-            border-radius: 50%;
-            object-fit: cover;
-        }
-
-        /* Contenido Principal */
-        .main-content {
-            padding: 2rem 1rem;
-            text-align: center;
-        }
-
-        .btn-mensaje {
-            background: var(--color-primario);
-            color: white;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 25px;
-            font-size: 1.2rem;
-            cursor: pointer;
-            margin: 1rem 0;
-            transition: transform 0.3s;
-        }
-
-        .btn-mensaje:hover {
-            transform: scale(1.05);
-        }
-
-        /* Grid de Multimedia */
-        .media-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 1rem;
-            margin: 2rem 0;
-        }
-
-        .media-item {
-            position: relative;
-            aspect-ratio: 1;
-            background: #333;
+        .upload-container {
+            background: white;
             border-radius: 10px;
-            overflow: hidden;
-        }
-
-        .media-item::after {
-            content: "🔒";
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            font-size: 2rem;
-        }
-
-        /* Menú Inferior */
-        .bottom-menu {
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            background: #222;
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            padding: 0.5rem 0;
-        }
-
-        .menu-item {
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
             text-align: center;
-            padding: 1rem;
+        }
+        .upload-area {
+            border: 2px dashed #3498db;
+            border-radius: 10px;
+            padding: 40px;
+            margin-bottom: 20px;
             cursor: pointer;
             transition: background 0.3s;
         }
-
-        .menu-item:hover {
-            background: #333;
+        .upload-area:hover {
+            background: #f0f8ff;
+        }
+        .upload-area p {
+            margin: 0;
+            font-size: 18px;
+            color: #3498db;
+        }
+        #videoGallery {
+            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 20px;
+            width: 100%;
+            max-width: 1200px;
+        }
+        .video-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .video-card video {
+            width: 100%;
+            height: 240px; /* Altura fija para todos los videos */
+            object-fit: cover; /* Ajusta el video al tamaño sin deformar */
+            display: block;
+        }
+        .video-info {
+            padding: 15px;
+        }
+        .delete-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+            width: 100%;
+        }
+        .delete-btn:hover {
+            background-color: #c0392b;
+        }
+        .status {
+            margin-top: 20px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
         }
     </style>
 </head>
 <body>
-    <!-- Header -->
-    <header class="header">
-        <div class="perfil-info">
-            <img src="URL_IMAGEN_PERFIL" class="perfil-img" alt="CarmenBBW">
-            <div>
-                <h2>CarmenBBW</h2>
-                <small>5 videos · 10 visitas</small>
-            </div>
+    <h1>Subir Videos a Cloudinary</h1>
+    <div class="upload-container">
+        <div class="upload-area" id="uploadArea">
+            <p>Arrastra tu video aquí o haz clic para seleccionar</p>
         </div>
-    </header>
+        <div id="status" class="status"></div>
+    </div>
+    <div id="videoGallery"></div>
 
-    <!-- Contenido Principal -->
-    <main class="main-content">
-        <button class="btn-mensaje">
-            <i class="fas fa-envelope"></i> ENVIAR MENSAJE
-        </button>
+    <!-- Cloudinary Upload Widget JS -->
+    <script src="https://upload-widget.cloudinary.com/global/all.js"></script>
+    <script>
+        // Configuración de Cloudinary
+        const cloudName = 'dba9d8';
+        const apiKey = '528757166221984';
+        const unsignedUploadPreset = 'web_upload';
 
-        <h3>VIDEOS Y FOTOS</h3>
-        <div class="media-grid">
-            <div class="media-item"></div>
-            <div class="media-item"></div>
-            <div class="media-item"></div>
-            <div class="media-item"></div>
-            <div class="media-item"></div>
-            <div class="media-item"></div>
-        </div>
-    </main>
+        // Obtener videos guardados del localStorage
+        let savedVideos = JSON.parse(localStorage.getItem('cloudinary_videos')) || [];
 
-    <!-- Menú Inferior -->
-    <nav class="bottom-menu">
-        <div class="menu-item">
-            <i class="fas fa-wallet"></i>
-            <div>Pagos</div>
-        </div>
-        <div class="menu-item">
-            <i class="fas fa-video"></i>
-            <div>En Vivo</div>
-        </div>
-        <div class="menu-item">
-            <i class="fas fa-users"></i>
-            <div>Perfiles</div>
-        </div>
-        <div class="menu-item">
-            <i class="fas fa-sign-out-alt"></i>
-            <div>Salir</div>
-        </div>
-    </nav>
+        // Función para renderizar videos
+        function renderVideos() {
+            const videoGallery = document.getElementById('videoGallery');
+            videoGallery.innerHTML = '';
+
+            savedVideos.forEach((video, index) => {
+                const videoCard = document.createElement('div');
+                videoCard.className = 'video-card';
+                videoCard.innerHTML = `
+                    <video controls src="${video.url}"></video>
+                    <div class="video-info">
+                        <button class="delete-btn" data-index="${index}">Eliminar Video</button>
+                    </div>
+                `;
+                videoGallery.appendChild(videoCard);
+            });
+
+            // Evento para eliminar videos
+            document.querySelectorAll('.delete-btn').forEach(button => {
+                button.addEventListener('click', (e) => {
+                    const index = e.target.getAttribute('data-index');
+                    savedVideos.splice(index, 1);
+                    localStorage.setItem('cloudinary_videos', JSON.stringify(savedVideos));
+                    renderVideos();
+                });
+            });
+        }
+
+        // Configurar el widget de Cloudinary
+        const widget = cloudinary.createUploadWidget(
+            {
+                cloudName: cloudName,
+                apiKey: apiKey,
+                uploadPreset: unsignedUploadPreset,
+                resourceType: 'video',
+                multiple: true,  // Permitir múltiples videos
+                maxFileSize: 50000000, // 50MB (ajustable)
+                clientAllowedFormats: ['mp4', 'mov', 'avi'],
+                showAdvancedOptions: true,
+                styles: {
+                    palette: {
+                        window: "#2c3e50",
+                        windowBorder: "#3498db",
+                        tabIcon: "#3498db",
+                        menuIcons: "#3498db",
+                        textDark: "#2c3e50",
+                        textLight: "#ffffff",
+                        link: "#3498db",
+                        action: "#3498db",
+                        inactiveTabIcon: "#bdc3c7",
+                        error: "#e74c3c",
+                        inProgress: "#3498db",
+                        complete: "#2ecc71",
+                        sourceBg: "#ecf0f1"
+                    }
+                }
+            },
+            (error, result) => {
+                if (!error && result && result.event === 'success') {
+                    savedVideos.push({
+                        url: result.info.secure_url,
+                        public_id: result.info.public_id,
+                        format: result.info.format
+                    });
+                    localStorage.setItem('cloudinary_videos', JSON.stringify(savedVideos));
+                    document.getElementById('status').className = 'status success';
+                    document.getElementById('status').innerHTML = '✅ Video subido correctamente!';
+                    renderVideos();
+                } else if (error) {
+                    document.getElementById('status').className = 'status error';
+                    document.getElementById('status').innerHTML = `❌ Error: ${error.message}`;
+                }
+            }
+        );
+
+        // Abrir widget al hacer clic en el área de subida
+        document.getElementById('uploadArea').addEventListener('click', () => {
+            widget.open();
+        });
+
+        // Renderizar videos al cargar la página
+        document.addEventListener('DOMContentLoaded', renderVideos);
+    </script>
 </body>
 </html>
