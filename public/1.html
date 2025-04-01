@@ -3,7 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Connect | Galería de Fotos</title>
+    <title>Premium Connect | Perfil</title>
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
+    <link rel="preconnect" href="https://picsum.photos">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
@@ -21,6 +23,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
         }
         
         /* BARRA DE LOGIN */
@@ -54,24 +57,149 @@
             transition: all 0.3s;
         }
         
-        .btn-login:hover {
+        .btn-login:hover, .btn-login:focus {
             transform: translateY(-2px);
             box-shadow: 0 4px 8px rgba(255, 64, 129, 0.4);
+            outline: none;
         }
 
-        /* CONTENEDOR PRINCIPAL */
-        .content-container {
-            padding: 80px 20px 20px;
-            max-width: 1200px;
-            margin: 0 auto;
+        /* HEADER */
+        .profile-header {
+            background: var(--primary);
+            height: 250px;
+            position: relative;
+            border-radius: 0 0 20px 20px;
+            overflow: visible;
+            z-index: 1;
+            margin-top: 50px;
         }
         
-        /* SECCIÓN DE SUBIDA */
+        .cover-photo {
+            width: 100%;
+            height: calc(100% - 30px);
+            background: 
+                linear-gradient(135deg, rgba(128, 0, 32, 0.85), rgba(90, 0, 24, 0.9)),
+                url('https://images.unsplash.com/photo-1519699047748-de8e457a634e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
+            background-blend-mode: overlay;
+            background-size: cover;
+            background-position: center;
+            border-radius: 0 0 20px 20px;
+            position: relative;
+        }
+        
+        .profile-circle {
+            position: absolute;
+            bottom: -50px;
+            left: 30px;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 4px solid rgba(255, 255, 255, 0.9);
+            overflow: hidden;
+            background: var(--dark);
+            z-index: 3;
+            box-shadow: 
+                0 0 0 4px var(--primary),
+                0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .profile-circle img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        /* CONTENEDOR PRINCIPAL */
+        .content-container {
+            padding: 70px 20px 100px;
+            position: relative;
+            z-index: 2;
+            min-height: calc(100vh - 250px - 60px);
+        }
+        
+        /* INFORMACIÓN DEL PERFIL */
+        .profile-info {
+            margin-top: 10px;
+            padding: 0 15px;
+        }
+        
+        .profile-name {
+            font-size: 1.5rem;
+            margin-bottom: 5px;
+            display: flex;
+            align-items: center;
+        }
+        
+        .verified-badge {
+            color: var(--accent);
+            margin-left: 8px;
+            font-size: 1rem;
+        }
+        
+        .profile-description {
+            color: #ccc;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin-top: 10px;
+        }
+        
+        .profile-stats {
+            display: flex;
+            justify-content: space-around;
+            margin: 15px 0 10px;
+            text-align: center;
+        }
+        
+        .stat-value {
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
+        
+        .stat-label {
+            font-size: 0.8rem;
+            color: #aaa;
+        }
+        
+        /* PESTAÑAS */
+        .tabs {
+            display: flex;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+            margin: 15px 0 10px;
+        }
+        
+        .tab {
+            padding: 10px 15px;
+            cursor: pointer;
+            position: relative;
+            transition: color 0.3s;
+        }
+        
+        .tab.active {
+            color: var(--accent);
+        }
+        
+        .tab.active::after {
+            content: '';
+            position: absolute;
+            bottom: -1px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--accent);
+            animation: tabUnderline 0.3s ease-out;
+        }
+
+        @keyframes tabUnderline {
+            from { transform: scaleX(0); }
+            to { transform: scaleX(1); }
+        }
+        
+        /* SECCIÓN DE SUBIDA DE FOTOS (Cloudinary) */
         .upload-section {
             background: rgba(128, 0, 32, 0.1);
             padding: 20px;
             border-radius: 10px;
-            margin-bottom: 30px;
+            margin: 20px 0;
             border: 2px dashed var(--accent);
         }
         
@@ -79,8 +207,8 @@
             display: flex;
             flex-direction: column;
             align-items: center;
-            gap: 15px;
-            padding: 20px;
+            gap: 1rem;
+            padding: 2rem;
             cursor: pointer;
         }
         
@@ -94,31 +222,31 @@
             max-height: 300px;
             border-radius: 10px;
             display: none;
-            margin: 15px auto;
+            margin: 0 auto;
         }
         
         .progress-container {
             width: 100%;
             background: rgba(255,255,255,0.1);
             border-radius: 50px;
-            margin: 15px 0;
+            margin: 1rem 0;
             overflow: hidden;
             display: none;
-            height: 8px;
+            height: 10px;
         }
         
         #progressBar {
             height: 100%;
             background: linear-gradient(to right, var(--accent), var(--primary));
             width: 0%;
-            transition: width 0.3s;
+            transition: width 0.3s ease;
         }
         
         .status {
             text-align: center;
-            padding: 10px;
-            margin: 10px 0;
-            border-radius: 5px;
+            padding: 1rem;
+            margin: 1rem 0;
+            border-radius: 8px;
             display: none;
         }
         
@@ -135,20 +263,15 @@
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
             gap: 15px;
-            margin-top: 20px;
+            margin: 20px 0;
         }
         
         .gallery-item {
             background: rgba(102, 0, 0, 0.3);
             border-radius: 10px;
             overflow: hidden;
-            transition: all 0.3s;
-            cursor: pointer;
-        }
-        
-        .gallery-item:hover {
-            transform: scale(1.03);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            transition: all 0.3s ease;
+            position: relative;
         }
         
         .gallery-img {
@@ -165,57 +288,184 @@
             align-items: center;
         }
         
-        /* MODAL PARA IMAGEN EXPANDIDA */
-        .modal {
-            display: none;
+        .btn-favorite {
+            background: none;
+            border: none;
+            color: var(--light);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        .btn-favorite .filled {
+            color: var(--accent);
+        }
+        
+        /* BOTÓN DE CHAT */
+        .chat-button {
             position: fixed;
-            top: 0;
-            left: 0;
+            bottom: 110px;
+            right: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--accent);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.4);
+            z-index: 100;
+            transition: all 0.3s;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+        }
+        
+        .chat-button:hover, .chat-button:focus {
+            transform: scale(1.1) translateY(-3px);
+            outline: none;
+        }
+        
+        /* FOOTER */
+        .footer {
+            display: flex;
+            justify-content: space-around;
+            background: var(--secondary);
+            padding: 15px 0;
+            position: fixed;
+            bottom: 0;
             width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2000;
+            z-index: 10;
+            height: 60px;
+            box-sizing: border-box;
+        }
+        
+        .footer-icon {
+            color: white;
+            font-size: 22px;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: none;
+            border: none;
+            padding: 5px 10px;
+            position: relative;
+        }
+        
+        .footer-icon.active {
+            color: var(--accent);
+        }
+        
+        .footer-icon:hover, .footer-icon:focus {
+            color: var(--accent);
+            transform: translateY(-3px);
+            outline: none;
+        }
+
+        .footer-badge {
+            position: absolute;
+            top: -5px;
+            right: 0;
+            background: var(--accent);
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            font-size: 0.7rem;
+            display: flex;
             align-items: center;
             justify-content: center;
         }
-        
-        .modal-content {
-            max-width: 90%;
-            max-height: 90%;
+
+        /* TOOLTIPS */
+        .tooltip {
+            position: relative;
         }
-        
-        .modal-img {
-            max-width: 100%;
-            max-height: 90vh;
-            border-radius: 8px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.5);
-        }
-        
-        .close-modal {
+
+        .tooltip-text {
+            visibility: hidden;
+            width: 120px;
+            background-color: var(--dark);
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
             position: absolute;
-            top: 20px;
-            right: 20px;
-            color: white;
-            font-size: 30px;
-            cursor: pointer;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            transform: translateX(-50%);
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 0.8rem;
         }
-        
+
+        .tooltip:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* RATING VISUAL */
+        .rating-stars {
+            display: inline-flex;
+            margin-left: 5px;
+        }
+
+        .rating-stars i {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-right: 2px;
+        }
+
+        .rating-stars i.filled {
+            color: gold;
+        }
+
         /* RESPONSIVE */
         @media (max-width: 768px) {
-            .gallery {
-                grid-template-columns: repeat(2, 1fr);
+            .profile-circle {
+                width: 100px;
+                height: 100px;
+                left: 20px;
+                bottom: -40px;
+            }
+            
+            .content-container {
+                padding: 60px 15px 90px;
             }
         }
         
         @media (max-width: 480px) {
-            .gallery {
-                grid-template-columns: 1fr;
+            .profile-header {
+                height: 220px;
+            }
+            
+            .content-container {
+                padding: 50px 10px 80px;
+            }
+            
+            .profile-circle {
+                width: 90px;
+                height: 90px;
             }
             
             .login-bar {
                 flex-direction: column;
-                gap: 10px;
-                padding: 10px;
+                padding: 8px;
+            }
+            
+            .login-bar span {
+                margin-bottom: 5px;
+                font-size: 0.8rem;
+            }
+            
+            .chat-button {
+                bottom: 100px;
+                width: 55px;
+                height: 55px;
+            }
+            
+            .gallery {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -224,71 +474,153 @@
     <!-- BARRA DE LOGIN -->
     <div class="login-bar">
         <span>💎 Contenido exclusivo para miembros</span>
-        <button class="btn-login" id="loginBtn">Iniciar sesión</button>
+        <button class="btn-login" aria-label="Iniciar sesión para contenido exclusivo">Iniciar sesión</button>
+    </div>
+    
+    <!-- HEADER -->
+    <div class="profile-header">
+        <div class="cover-photo"></div>
+        <div class="profile-circle">
+            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Perfil de Sofia Martinez" loading="lazy">
+        </div>
     </div>
     
     <!-- CONTENIDO PRINCIPAL -->
     <div class="content-container">
-        <!-- SECCIÓN DE SUBIDA -->
-        <div class="upload-section">
-            <div class="file-upload" id="dropArea">
-                <i class="fas fa-cloud-upload-alt"></i>
-                <p>Arrastra tus fotos aquí o haz clic para seleccionar</p>
-                <input type="file" id="fileInput" accept="image/*" style="display: none;">
+        <div class="profile-info">
+            <h2 class="profile-name">
+                Sofia Martinez
+                <i class="fas fa-check-circle verified-badge" aria-hidden="true"></i>
+            </h2>
+            <p class="profile-description">
+                Modelo fitness profesional. Contenido exclusivo de entrenamiento, nutrición y lifestyle.
+            </p>
+            
+            <div class="profile-stats">
+                <div>
+                    <div class="stat-value">24.5K</div>
+                    <div class="stat-label">Seguidores</div>
+                </div>
+                <div>
+                    <div class="stat-value">356</div>
+                    <div class="stat-label">Fotos</div>
+                </div>
+                <div>
+                    <div class="stat-value">89%</div>
+                    <div class="stat-label">
+                        Rating
+                        <div class="rating-stars" aria-label="4.5 estrellas de 5">
+                            <i class="fas fa-star filled"></i>
+                            <i class="fas fa-star filled"></i>
+                            <i class="fas fa-star filled"></i>
+                            <i class="fas fa-star filled"></i>
+                            <i class="fas fa-star-half-alt filled"></i>
+                        </div>
+                    </div>
+                </div>
             </div>
-            
-            <img id="preview" alt="Vista previa">
-            
-            <div class="progress-container" id="progressContainer">
-                <div id="progressBar"></div>
-            </div>
-            
-            <button id="uploadBtn" class="btn-login" style="display: none;">
-                Subir Foto <i class="fas fa-upload"></i>
-            </button>
-            
-            <div id="statusMessage" class="status"></div>
         </div>
         
-        <!-- GALERÍA DE IMÁGENES -->
-        <h2 style="margin: 20px 0 10px;">Tus Fotos</h2>
-        <div class="gallery" id="gallery">
-            <!-- Las imágenes aparecerán aquí automáticamente -->
+        <!-- PESTAÑAS -->
+        <div class="tabs">
+            <div class="tab active" data-tab="gallery">Galería</div>
+            <div class="tab" data-tab="upload">Subir Fotos</div>
+            <div class="tab" data-tab="favorites">Favoritos</div>
+        </div>
+        
+        <!-- SECCIÓN DE GALERÍA -->
+        <div class="content-section active" id="gallerySection">
+            <div class="gallery" id="gallery">
+                <!-- Las imágenes se cargarán aquí dinámicamente -->
+            </div>
+        </div>
+        
+        <!-- SECCIÓN DE SUBIDA DE FOTOS -->
+        <div class="content-section" id="uploadSection">
+            <div class="upload-section">
+                <div class="file-upload" id="dropArea">
+                    <i class="fas fa-cloud-upload-alt"></i>
+                    <p>Arrastra tu foto aquí o haz clic para seleccionar</p>
+                    <input type="file" id="fileInput" accept="image/*">
+                </div>
+                
+                <img id="preview" alt="Vista previa">
+                
+                <div class="progress-container" id="progressContainer">
+                    <div id="progressBar"></div>
+                </div>
+                
+                <button id="uploadBtn" class="btn-login">Subir Foto <i class="fas fa-upload"></i></button>
+                
+                <div id="statusMessage" class="status"></div>
+            </div>
+        </div>
+        
+        <!-- SECCIÓN DE FAVORITOS -->
+        <div class="content-section" id="favoritesSection">
+            <div class="gallery" id="favoritesGallery">
+                <!-- Las fotos favoritas se cargarán aquí -->
+            </div>
         </div>
     </div>
     
-    <!-- MODAL PARA IMAGEN EXPANDIDA -->
-    <div class="modal" id="imageModal">
-        <span class="close-modal">&times;</span>
-        <div class="modal-content">
-            <img class="modal-img" id="expandedImg" src="" alt="Imagen expandida">
-        </div>
+    <!-- BOTÓN DE CHAT -->
+    <button class="chat-button" id="chatButton" aria-label="Abrir chat">
+        <i class="fas fa-comment-dots"></i>
+    </button>
+    
+    <!-- FOOTER -->
+    <div class="footer">
+        <button class="footer-icon tooltip active" aria-label="Perfil">
+            <i class="fas fa-user"></i>
+            <span class="tooltip-text">Perfil</span>
+        </button>
+        <button class="footer-icon tooltip" aria-label="Perfiles">
+            <i class="fas fa-users"></i>
+            <span class="tooltip-text">Perfiles</span>
+        </button>
+        <button class="footer-icon tooltip" aria-label="Videocámara">
+            <i class="fas fa-video"></i>
+            <span class="tooltip-text">Videocámara</span>
+        </button>
+        <button class="footer-icon tooltip" aria-label="Mensajes">
+            <i class="fas fa-comments"></i>
+            <span class="tooltip-text">Mensajes</span>
+            <span class="footer-badge">3</span>
+        </button>
+        <button class="footer-icon tooltip" aria-label="Cerrar sesión">
+            <i class="fas fa-sign-out-alt"></i>
+            <span class="tooltip-text">Salir</span>
+        </button>
     </div>
 
     <script>
-        // Configuración de Cloudinary
-        const cloudinaryConfig = {
-            cloudName: 'dba9d8',
-            apiKey: '528757166221984',
-            uploadPreset: 'web_upload'
-        };
-        
         // Estado de la aplicación
         const appState = {
             auth: {
                 isAuthenticated: false,
-                userType: 'guest'
+                userType: 'guest',
+                token: null
             },
-            images: JSON.parse(localStorage.getItem('user_photos')) || []
+            currentTab: 'gallery',
+            favorites: new Set(),
+            cloudinary: {
+                cloudName: 'dba9d8',
+                apiKey: '528757166221984',
+                uploadPreset: 'web_upload',
+                images: JSON.parse(localStorage.getItem('premium_connect_gallery')) || []
+            }
         };
-        
+
         // Elementos del DOM
         const DOM = {
-            // Autenticación
-            loginBtn: document.getElementById('loginBtn'),
+            // Elementos existentes
+            chatButton: document.getElementById('chatButton'),
+            loginButton: document.querySelector('.btn-login'),
             loginBar: document.querySelector('.login-bar'),
+            tabs: document.querySelectorAll('.tab'),
             
-            // Subida de imágenes
+            // Elementos de Cloudinary
             fileInput: document.getElementById('fileInput'),
             dropArea: document.getElementById('dropArea'),
             uploadBtn: document.getElementById('uploadBtn'),
@@ -296,106 +628,130 @@
             progressContainer: document.getElementById('progressContainer'),
             progressBar: document.getElementById('progressBar'),
             statusMessage: document.getElementById('statusMessage'),
-            
-            // Galería
             gallery: document.getElementById('gallery'),
+            favoritesGallery: document.getElementById('favoritesGallery'),
             
-            // Modal
-            imageModal: document.getElementById('imageModal'),
-            expandedImg: document.getElementById('expandedImg'),
-            closeModal: document.querySelector('.close-modal')
+            // Secciones de contenido
+            gallerySection: document.getElementById('gallerySection'),
+            uploadSection: document.getElementById('uploadSection'),
+            favoritesSection: document.getElementById('favoritesSection')
         };
-        
+
         // Inicialización
         document.addEventListener('DOMContentLoaded', () => {
             renderGallery();
             setupEventListeners();
             checkAuth();
         });
-        
-        // Renderizar galería
+
+        // Renderizado de la galería
         function renderGallery() {
             DOM.gallery.innerHTML = '';
+            DOM.favoritesGallery.innerHTML = '';
             
-            appState.images.forEach((img, index) => {
-                const imgElement = document.createElement('div');
-                imgElement.className = 'gallery-item';
-                imgElement.innerHTML = `
-                    <img src="${img.secure_url}" class="gallery-img" alt="Foto ${index + 1}">
-                    <div class="gallery-info">
-                        <span>${(img.bytes/1024).toFixed(1)} KB</span>
-                    </div>
-                `;
-                
-                // Evento para expandir imagen
-                imgElement.addEventListener('click', () => {
-                    DOM.expandedImg.src = img.secure_url;
-                    DOM.imageModal.style.display = 'flex';
-                });
-                
-                DOM.gallery.appendChild(imgElement);
+            appState.cloudinary.images.forEach(img => {
+                const isFavorite = appState.favorites.has(img.public_id);
+                createGalleryItem(img, isFavorite);
             });
         }
-        
-        // Configurar event listeners
+
+        function createGalleryItem(img, isFavorite) {
+            const galleryItem = document.createElement('div');
+            galleryItem.className = 'gallery-item';
+            galleryItem.innerHTML = `
+                <img src="${img.secure_url}" class="gallery-img" alt="Foto subida">
+                <div class="gallery-info">
+                    <span>${(img.bytes/1024).toFixed(1)} KB</span>
+                    <button class="btn-favorite" data-id="${img.public_id}">
+                        <i class="fas fa-heart ${isFavorite ? 'filled' : ''}"></i>
+                    </button>
+                </div>
+            `;
+            
+            // Agregar a la galería principal
+            DOM.gallery.appendChild(galleryItem.cloneNode(true));
+            
+            // Si es favorito, agregar también a la galería de favoritos
+            if (isFavorite) {
+                DOM.favoritesGallery.appendChild(galleryItem);
+            }
+            
+            // Evento para favoritos
+            galleryItem.querySelector('.btn-favorite').addEventListener('click', (e) => {
+                e.stopPropagation();
+                toggleFavorite(img.public_id);
+            });
+        }
+
+        // Configuración de event listeners
         function setupEventListeners() {
-            // Autenticación
-            DOM.loginBtn.addEventListener('click', handleLogin);
+            // Eventos de autenticación
+            DOM.loginButton.addEventListener('click', handleLogin);
+            DOM.chatButton.addEventListener('click', handleChatClick);
             
-            // Drag and drop
-            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(event => {
-                DOM.dropArea.addEventListener(event, preventDefaults);
-            });
-            
-            ['dragenter', 'dragover'].forEach(event => {
-                DOM.dropArea.addEventListener(event, () => {
-                    DOM.dropArea.style.backgroundColor = 'rgba(255, 64, 129, 0.1)';
+            // Eventos de pestañas
+            DOM.tabs.forEach(tab => {
+                tab.addEventListener('click', () => {
+                    // Actualizar pestañas activas
+                    DOM.tabs.forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    appState.currentTab = tab.dataset.tab;
+                    
+                    // Mostrar sección correspondiente
+                    DOM.gallerySection.classList.remove('active');
+                    DOM.uploadSection.classList.remove('active');
+                    DOM.favoritesSection.classList.remove('active');
+                    
+                    document.getElementById(`${tab.dataset.tab}Section`).classList.add('active');
                 });
             });
             
-            ['dragleave', 'drop'].forEach(event => {
-                DOM.dropArea.addEventListener(event, () => {
-                    DOM.dropArea.style.backgroundColor = '';
-                });
+            // Eventos de Cloudinary (drag and drop)
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                DOM.dropArea.addEventListener(eventName, preventDefaults, false);
             });
             
-            DOM.dropArea.addEventListener('drop', handleDrop);
+            ['dragenter', 'dragover'].forEach(eventName => {
+                DOM.dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                DOM.dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            DOM.dropArea.addEventListener('drop', handleDrop, false);
             DOM.dropArea.addEventListener('click', () => DOM.fileInput.click());
             DOM.fileInput.addEventListener('change', handleFileSelect);
             DOM.uploadBtn.addEventListener('click', uploadImage);
-            
-            // Modal
-            DOM.closeModal.addEventListener('click', () => {
-                DOM.imageModal.style.display = 'none';
-            });
-            
-            DOM.imageModal.addEventListener('click', (e) => {
-                if (e.target === DOM.imageModal) {
-                    DOM.imageModal.style.display = 'none';
-                }
-            });
         }
-        
+
         // Funciones de Cloudinary
         function preventDefaults(e) {
             e.preventDefault();
             e.stopPropagation();
         }
         
+        function highlight() {
+            DOM.dropArea.style.backgroundColor = 'rgba(255, 64, 129, 0.1)';
+        }
+        
+        function unhighlight() {
+            DOM.dropArea.style.backgroundColor = '';
+        }
+        
         function handleDrop(e) {
-            const files = e.dataTransfer.files;
-            if (files.length) {
-                DOM.fileInput.files = files;
-                handleFileSelect({ target: DOM.fileInput });
-            }
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            DOM.fileInput.files = files;
+            handleFileSelect({ target: DOM.fileInput });
         }
         
         function handleFileSelect(e) {
             const file = e.target.files[0];
             if (file) {
-                // Validar archivo
+                // Validar tipo y tamaño
                 if (!file.type.match('image.*')) {
-                    showStatus('Solo se permiten imágenes', 'error');
+                    showStatus('Solo se permiten archivos de imagen', 'error');
                     return;
                 }
                 
@@ -406,10 +762,11 @@
                 
                 // Mostrar vista previa
                 const reader = new FileReader();
-                reader.onload = (event) => {
+                reader.onload = function(event) {
                     DOM.preview.src = event.target.result;
                     DOM.preview.style.display = 'block';
                     DOM.uploadBtn.style.display = 'block';
+                    DOM.uploadBtn.disabled = false;
                 };
                 reader.readAsDataURL(file);
             }
@@ -425,39 +782,44 @@
             
             const formData = new FormData();
             formData.append('file', file);
-            formData.append('upload_preset', cloudinaryConfig.uploadPreset);
-            formData.append('cloud_name', cloudinaryConfig.cloudName);
-            formData.append('api_key', cloudinaryConfig.apiKey);
+            formData.append('upload_preset', appState.cloudinary.uploadPreset);
+            formData.append('cloud_name', appState.cloudinary.cloudName);
+            formData.append('api_key', appState.cloudinary.apiKey);
             
             try {
-                const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudinaryConfig.cloudName}/image/upload`, {
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${appState.cloudinary.cloudName}/image/upload`, {
                     method: 'POST',
                     body: formData
                 });
                 
                 const data = await response.json();
                 
-                if (!response.ok) throw new Error(data.error.message || 'Error al subir');
+                if (!response.ok) {
+                    throw new Error(data.error.message || 'Error al subir la imagen');
+                }
                 
                 showStatus('¡Foto subida con éxito!', 'success');
                 
-                // Guardar imagen y actualizar galería
-                appState.images.push(data);
-                localStorage.setItem('user_photos', JSON.stringify(appState.images));
+                // Guardar la imagen en el estado y en localStorage
+                appState.cloudinary.images.push(data);
+                localStorage.setItem('premium_connect_gallery', JSON.stringify(appState.cloudinary.images));
+                
+                // Actualizar la galería
                 renderGallery();
-                
-                // Resetear formulario
-                DOM.fileInput.value = '';
-                DOM.preview.style.display = 'none';
-                DOM.uploadBtn.style.display = 'none';
-                DOM.progressContainer.style.display = 'none';
-                
+                resetUploadForm();
             } catch (error) {
                 showStatus(`Error: ${error.message}`, 'error');
             } finally {
                 DOM.uploadBtn.disabled = false;
                 DOM.uploadBtn.innerHTML = 'Subir Foto <i class="fas fa-upload"></i>';
             }
+        }
+        
+        function resetUploadForm() {
+            DOM.fileInput.value = '';
+            DOM.preview.style.display = 'none';
+            DOM.progressContainer.style.display = 'none';
+            DOM.progressBar.style.width = '0%';
         }
         
         function showStatus(message, type) {
@@ -467,29 +829,72 @@
             
             setTimeout(() => {
                 DOM.statusMessage.style.display = 'none';
-            }, 4000);
+            }, 5000);
         }
         
+        // Funciones de favoritos
+        function toggleFavorite(imageId) {
+            if (appState.favorites.has(imageId)) {
+                appState.favorites.delete(imageId);
+            } else {
+                appState.favorites.add(imageId);
+            }
+            localStorage.setItem('premium_connect_favorites', JSON.stringify(Array.from(appState.favorites)));
+            renderGallery();
+        }
+
         // Funciones de autenticación
         function checkAuth() {
-            // Simular autenticación
-            const token = localStorage.getItem('premiumConnectToken');
-            if (token) {
+            // Simular verificación de token en localStorage
+            const fakeToken = localStorage.getItem('premiumConnectToken');
+            if (fakeToken) {
                 appState.auth = {
                     isAuthenticated: true,
-                    userType: 'premium'
+                    userType: 'premium',
+                    token: fakeToken
                 };
                 DOM.loginBar.style.display = 'none';
+                
+                // Cargar favoritos guardados
+                const savedFavorites = JSON.parse(localStorage.getItem('premium_connect_favorites')) || [];
+                savedFavorites.forEach(id => appState.favorites.add(id));
+                
+                renderGallery();
             }
         }
-        
+
         function handleLogin() {
-            const confirmLogin = confirm('¿Simular inicio de sesión premium? (Demo)');
-            if (confirmLogin) {
-                localStorage.setItem('premiumConnectToken', 'fake_token_123');
-                appState.auth.isAuthenticated = true;
+            const wantLogin = confirm('¿Quieres simular inicio de sesión premium? (Demo)');
+            if (wantLogin) {
+                // Simular token JWT
+                const fakeToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0IiwidXNlclR5cGUiOiJwcmVtaXVtIn0.8QJj6b8T3JYKVZ7vX7X7X7X7X7X7X7X7X7X7X7X7X';
+                
+                localStorage.setItem('premiumConnectToken', fakeToken);
+                appState.auth = {
+                    isAuthenticated: true,
+                    userType: 'premium',
+                    token: fakeToken
+                };
+                
                 DOM.loginBar.style.display = 'none';
-                alert('✅ Ahora tienes acceso premium');
+                renderGallery();
+                alert('✅ Ahora tienes acceso premium a todo el contenido');
+            }
+        }
+
+        function showAuthRequired() {
+            alert('💎 Inicia sesión para acceder a este contenido exclusivo');
+        }
+
+        // Funciones de chat
+        function handleChatClick() {
+            if (appState.auth.isAuthenticated) {
+                alert('💬 Chat premium activado. ¡Hola Sofia!');
+            } else {
+                const wantChat = confirm('Para chatear con Sofia necesitas una suscripción premium. ¿Quieres iniciar sesión ahora?');
+                if (wantChat) {
+                    handleLogin();
+                }
             }
         }
     </script>
