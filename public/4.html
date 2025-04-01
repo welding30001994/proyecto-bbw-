@@ -3,895 +3,538 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium Connect | Perfil</title>
-    <link rel="preconnect" href="https://cdnjs.cloudflare.com">
-    <link rel="preconnect" href="https://picsum.photos">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Galería Cloudinary Mejorada</title>
     <style>
         :root {
-            --primary: #800020;
-            --secondary: #5a0018;
-            --accent: #ff4081;
-            --dark: #1a1a2e;
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --accent: #4895ef;
             --light: #f8f9fa;
-            --gray: #6c757d;
+            --dark: #212529;
+            --success: #4cc9f0;
+            --danger: #f72585;
+        }
+        
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background-color: var(--dark);
-            color: var(--light);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            overflow-x: hidden;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 2rem;
         }
         
-        /* BARRA DE LOGIN */
-        .login-bar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(128, 0, 32, 0.9);
-            color: white;
-            padding: 12px 20px;
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            animation: fadeIn 0.5s ease-out;
+        }
+        
+        h1 {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--dark);
+            text-shadow: 1px 1px 3px rgba(0,0,0,0.1);
+            font-size: 2.5rem;
+        }
+        
+        .upload-section {
+            background: white;
+            border-radius: 15px;
+            padding: 2rem;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            margin-bottom: 3rem;
+            transition: all 0.3s ease;
+        }
+        
+        .upload-section:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+        }
+        
+        .file-upload {
+            position: relative;
             display: flex;
-            justify-content: space-between;
+            flex-direction: column;
             align-items: center;
-            z-index: 1000;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-        }
-        
-        .login-bar span {
-            font-size: 0.9rem;
-        }
-        
-        .btn-login {
-            background: var(--accent);
-            color: white;
-            border: none;
-            padding: 8px 20px;
-            border-radius: 20px;
-            font-weight: bold;
+            gap: 1rem;
+            padding: 2rem;
+            border: 2px dashed var(--accent);
+            border-radius: 10px;
             cursor: pointer;
             transition: all 0.3s;
         }
         
-        .btn-login:hover, .btn-login:focus {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 8px rgba(255, 64, 129, 0.4);
-            outline: none;
-        }
-
-        /* HEADER */
-        .profile-header {
-            background: var(--primary);
-            height: 250px;
-            position: relative;
-            border-radius: 0 0 20px 20px;
-            overflow: visible;
-            z-index: 1;
-            margin-top: 50px;
+        .file-upload:hover {
+            background: rgba(72, 149, 239, 0.05);
+            border-color: var(--primary);
         }
         
-        .cover-photo {
-            width: 100%;
-            height: calc(100% - 30px);
-            background: 
-                linear-gradient(135deg, rgba(128, 0, 32, 0.85), rgba(90, 0, 24, 0.9)),
-                url('https://images.unsplash.com/photo-1519699047748-de8e457a634e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80');
-            background-blend-mode: overlay;
-            background-size: cover;
-            background-position: center;
-            border-radius: 0 0 20px 20px;
-            position: relative;
-        }
-        
-        .profile-circle {
-            position: absolute;
-            bottom: -50px;
-            left: 30px;
-            width: 120px;
-            height: 120px;
-            border-radius: 50%;
-            border: 4px solid rgba(255, 255, 255, 0.9);
-            overflow: hidden;
-            background: var(--dark);
-            z-index: 3;
-            box-shadow: 
-                0 0 0 4px var(--primary),
-                0 4px 15px rgba(0, 0, 0, 0.3);
-        }
-        
-        .profile-circle img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-        
-        /* CONTENEDOR PRINCIPAL */
-        .content-container {
-            padding: 70px 20px 100px;
-            position: relative;
-            z-index: 2;
-            min-height: calc(100vh - 250px - 60px);
-        }
-        
-        /* INFORMACIÓN DEL PERFIL */
-        .profile-info {
-            margin-top: 10px;
-            padding: 0 15px;
-        }
-        
-        .profile-name {
-            font-size: 1.5rem;
-            margin-bottom: 5px;
-            display: flex;
-            align-items: center;
-        }
-        
-        .verified-badge {
+        .file-upload i {
+            font-size: 3rem;
             color: var(--accent);
-            margin-left: 8px;
-            font-size: 1rem;
+            transition: all 0.3s;
         }
         
-        .profile-description {
-            color: #ccc;
-            font-size: 0.9rem;
-            line-height: 1.5;
-            margin-top: 10px;
+        .file-upload:hover i {
+            transform: scale(1.1);
+            color: var(--primary);
         }
         
-        .profile-stats {
-            display: flex;
-            justify-content: space-around;
-            margin: 15px 0 10px;
-            text-align: center;
-        }
-        
-        .stat-value {
-            font-size: 1.2rem;
-            font-weight: bold;
-        }
-        
-        .stat-label {
-            font-size: 0.8rem;
-            color: #aaa;
-        }
-        
-        /* PESTAÑAS */
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
-            margin: 15px 0 10px;
-        }
-        
-        .tab {
-            padding: 10px 15px;
-            cursor: pointer;
-            position: relative;
-            transition: color 0.3s;
-        }
-        
-        .tab.active {
-            color: var(--accent);
-        }
-        
-        .tab.active::after {
-            content: '';
-            position: absolute;
-            bottom: -1px;
-            left: 0;
-            right: 0;
-            height: 2px;
-            background: var(--accent);
-            animation: tabUnderline 0.3s ease-out;
-        }
-
-        @keyframes tabUnderline {
-            from { transform: scaleX(0); }
-            to { transform: scaleX(1); }
-        }
-        
-        /* GRID DE VIDEOS */
-        .video-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 15px;
-            margin: 15px 0 40px;
-        }
-        
-        .video-card {
-            background: rgba(102, 0, 0, 0.3);
-            border-radius: 10px;
-            overflow: hidden;
-            height: 180px;
-            position: relative;
-            transition: all 0.3s ease;
-            cursor: pointer;
-            will-change: transform;
-            backface-visibility: hidden;
-        }
-        
-        .video-card:hover {
-            transform: scale(1.03);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-        }
-        
-        .video-thumbnail {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: filter 0.3s;
-        }
-        
-        .video-info {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            padding: 10px;
-            transition: opacity 0.3s;
-        }
-        
-        .video-title {
-            margin: 0;
-            font-size: 0.9rem;
-        }
-        
-        .video-stats {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.8rem;
-            margin-top: 5px;
-            color: #ccc;
-        }
-        
-        /* ICONOS DE BLOQUEO */
-        .locked-content {
-            position: relative;
-        }
-        
-        .locked-content::after {
-            content: "\f023";
-            font-family: "Font Awesome 6 Free";
-            font-weight: 900;
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            color: white;
-            background: rgba(0,0,0,0.7);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1.5rem;
-            z-index: 2;
-        }
-        
-        .locked-content .video-thumbnail {
-            filter: brightness(0.5);
-        }
-        
-        .locked-content .video-info {
-            opacity: 0.7;
-        }
-        
-        /* CONTENIDO GRATIS */
-        .free-content {
-            border: 2px solid var(--accent);
-        }
-        
-        .free-content::after {
+        #fileInput {
             display: none;
         }
         
-        .free-badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            background: var(--accent);
-            color: white;
-            padding: 3px 8px;
+        #preview {
+            max-width: 100%;
+            max-height: 400px;
             border-radius: 10px;
-            font-size: 0.7rem;
-            font-weight: bold;
-            z-index: 3;
+            display: none;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            animation: fadeIn 0.5s ease-out;
         }
-
-        /* REPRODUCTOR DE VIDEO MODAL */
-        .video-player-modal {
+        
+        #uploadBtn {
+            background: linear-gradient(to right, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 0.8rem 2rem;
+            border-radius: 50px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(67, 97, 238, 0.3);
+            display: none;
+            margin: 1rem auto 0;
+        }
+        
+        #uploadBtn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 7px 20px rgba(67, 97, 238, 0.4);
+        }
+        
+        #uploadBtn:disabled {
+            background: #cccccc;
+            transform: none;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+        
+        .progress-container {
+            width: 100%;
+            background: #e9ecef;
+            border-radius: 50px;
+            margin: 1rem 0;
+            overflow: hidden;
+            display: none;
+            height: 10px;
+        }
+        
+        #progressBar {
+            height: 100%;
+            background: linear-gradient(to right, var(--accent), var(--success));
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+        
+        .gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+            gap: 2rem;
+            margin-top: 3rem;
+        }
+        
+        .gallery-item {
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+        
+        .gallery-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(0,0,0,0.2);
+        }
+        
+        .gallery-img {
+            width: 100%;
+            height: 350px;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s;
+        }
+        
+        .gallery-item:hover .gallery-img {
+            transform: scale(1.03);
+        }
+        
+        .gallery-info {
+            padding: 1.5rem;
+        }
+        
+        .gallery-url {
+            font-size: 0.9rem;
+            color: #6c757d;
+            word-break: break-all;
+            margin-top: 0.5rem;
+        }
+        
+        .copy-btn {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        
+        .gallery-item:hover .copy-btn {
+            opacity: 1;
+        }
+        
+        .copy-btn:hover {
+            background: var(--primary);
+        }
+        
+        .status {
+            text-align: center;
+            padding: 1.2rem;
+            margin: 1rem 0;
+            border-radius: 8px;
+            display: none;
+            animation: fadeIn 0.3s ease-out;
+        }
+        
+        .success {
+            background: rgba(76, 201, 240, 0.2);
+            color: var(--dark);
+        }
+        
+        .error {
+            background: rgba(247, 37, 133, 0.2);
+            color: var(--dark);
+        }
+        
+        /* Modal para imagen expandida */
+        .modal {
+            display: none;
             position: fixed;
-            top: 0;
+            z-index: 1000;
             left: 0;
+            top: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0,0,0,0.9);
-            z-index: 2000;
+            background-color: rgba(0,0,0,0.9);
+            overflow: auto;
+            animation: fadeIn 0.3s;
+        }
+        
+        .modal-content {
             display: flex;
             justify-content: center;
             align-items: center;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.3s;
+            height: 100%;
+            padding: 2rem;
         }
-
-        .video-player-modal.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .video-container {
-            width: 90%;
-            max-width: 800px;
-            position: relative;
-        }
-
-        .video-container video {
-            width: 100%;
+        
+        .modal-img {
+            max-width: 90%;
+            max-height: 90%;
+            object-fit: contain;
+            animation: zoomIn 0.3s;
             border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.3);
         }
-
-        .close-btn {
+        
+        .close {
             position: absolute;
-            top: -40px;
-            right: 0;
-            background: var(--accent);
-            border: none;
+            top: 25px;
+            right: 35px;
             color: white;
-            width: 30px;
-            height: 30px;
-            border-radius: 50%;
-            font-size: 1.2rem;
+            font-size: 40px;
+            font-weight: bold;
             cursor: pointer;
-            transition: transform 0.2s;
-        }
-
-        .close-btn:hover {
-            transform: scale(1.1);
-        }
-
-        /* EFECTOS DE CARGA */
-        @keyframes shimmer {
-            0% { background-position: -468px 0 }
-            100% { background-position: 468px 0 }
-        }
-
-        .loading-card {
-            animation: shimmer 1.5s infinite linear;
-            background: linear-gradient(to right, #2a2a3a 8%, #3a3a4a 18%, #2a2a3a 33%);
-            background-size: 800px 104px;
-        }
-
-        /* BOTÓN DE CHAT */
-        .chat-button {
-            position: fixed;
-            bottom: 110px;
-            right: 20px;
-            width: 60px;
-            height: 60px;
-            background: var(--accent);
-            border-radius: 50%;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            cursor: pointer;
-            box-shadow: 0 4px 15px rgba(255, 64, 129, 0.4);
-            z-index: 100;
-            transition: all 0.3s;
-            border: none;
-            color: white;
-            font-size: 1.5rem;
+            transition: 0.3s;
         }
         
-        .chat-button:hover, .chat-button:focus {
-            transform: scale(1.1) translateY(-3px);
-            outline: none;
-        }
-        
-        /* FOOTER */
-        .footer {
-            display: flex;
-            justify-content: space-around;
-            background: var(--secondary);
-            padding: 15px 0;
-            position: fixed;
-            bottom: 0;
-            width: 100%;
-            z-index: 10;
-            height: 60px;
-            box-sizing: border-box;
-        }
-        
-        .footer-icon {
-            color: white;
-            font-size: 22px;
-            cursor: pointer;
-            transition: all 0.3s;
-            background: none;
-            border: none;
-            padding: 5px 10px;
-            position: relative;
-        }
-        
-        .footer-icon.active {
+        .close:hover {
             color: var(--accent);
         }
         
-        .footer-icon:hover, .footer-icon:focus {
-            color: var(--accent);
-            transform: translateY(-3px);
-            outline: none;
-        }
-
-        .footer-badge {
-            position: absolute;
-            top: -5px;
-            right: 0;
-            background: var(--accent);
-            color: white;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            font-size: 0.7rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* TOOLTIPS */
-        .tooltip {
-            position: relative;
-        }
-
-        .tooltip-text {
-            visibility: hidden;
-            width: 120px;
-            background-color: var(--dark);
-            color: #fff;
-            text-align: center;
-            border-radius: 6px;
-            padding: 5px;
-            position: absolute;
-            z-index: 1;
-            bottom: 125%;
-            left: 50%;
-            transform: translateX(-50%);
-            opacity: 0;
-            transition: opacity 0.3s;
-            font-size: 0.8rem;
-        }
-
-        .tooltip:hover .tooltip-text {
-            visibility: visible;
-            opacity: 1;
-        }
-
-        /* RATING VISUAL */
-        .rating-stars {
-            display: inline-flex;
-            margin-left: 5px;
-        }
-
-        .rating-stars i {
-            color: var(--gray);
-            font-size: 0.9rem;
-            margin-right: 2px;
-        }
-
-        .rating-stars i.filled {
-            color: gold;
-        }
-
-        /* RESPONSIVE */
-        @media (max-width: 768px) {
-            .video-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .profile-circle {
-                width: 100px;
-                height: 100px;
-                left: 20px;
-                bottom: -40px;
-            }
-            
-            .content-container {
-                padding: 60px 15px 90px;
-            }
-
-            .video-player-modal .video-container {
-                width: 95%;
-            }
+        @keyframes zoomIn {
+            from { transform: scale(0.9); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
         }
         
-        @media (max-width: 480px) {
-            .video-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .profile-header {
-                height: 220px;
-            }
-            
-            .content-container {
-                padding: 50px 10px 80px;
-            }
-            
-            .profile-circle {
-                width: 90px;
-                height: 90px;
-            }
-            
-            .login-bar {
-                flex-direction: column;
-                padding: 8px;
-            }
-            
-            .login-bar span {
-                margin-bottom: 5px;
-                font-size: 0.8rem;
-            }
-            
-            .chat-button {
-                bottom: 100px;
-                width: 55px;
-                height: 55px;
-            }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <!-- BARRA DE LOGIN -->
-    <div class="login-bar">
-        <span>💎 Contenido exclusivo para miembros</span>
-        <button class="btn-login" aria-label="Iniciar sesión para contenido exclusivo">Iniciar sesión</button>
-    </div>
-    
-    <!-- HEADER -->
-    <div class="profile-header">
-        <div class="cover-photo"></div>
-        <div class="profile-circle">
-            <img src="https://randomuser.me/api/portraits/women/44.jpg" alt="Perfil de Sofia Martinez" loading="lazy">
-        </div>
-    </div>
-    
-    <!-- CONTENIDO PRINCIPAL -->
-    <div class="content-container">
-        <div class="profile-info">
-            <h2 class="profile-name">
-                Sofia Martinez
-                <i class="fas fa-check-circle verified-badge" aria-hidden="true"></i>
-            </h2>
-            <p class="profile-description">
-                Modelo fitness profesional. Contenido exclusivo de entrenamiento, nutrición y lifestyle.
-            </p>
-            
-            <div class="profile-stats">
-                <div>
-                    <div class="stat-value">24.5K</div>
-                    <div class="stat-label">Seguidores</div>
-                </div>
-                <div>
-                    <div class="stat-value">356</div>
-                    <div class="stat-label">Videos</div>
-                </div>
-                <div>
-                    <div class="stat-value">89%</div>
-                    <div class="stat-label">
-                        Rating
-                        <div class="rating-stars" aria-label="4.5 estrellas de 5">
-                            <i class="fas fa-star filled"></i>
-                            <i class="fas fa-star filled"></i>
-                            <i class="fas fa-star filled"></i>
-                            <i class="fas fa-star filled"></i>
-                            <i class="fas fa-star-half-alt filled"></i>
-                        </div>
-                    </div>
-                </div>
+    <div class="container">
+        <h1>Galería Cloudinary Mejorada</h1>
+        
+        <div class="upload-section">
+            <div class="file-upload" id="dropArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <p>Arrastra tu imagen aquí o haz clic para seleccionar</p>
+                <input type="file" id="fileInput" accept="image/*">
             </div>
+            
+            <img id="preview" alt="Vista previa">
+            
+            <div class="progress-container" id="progressContainer">
+                <div id="progressBar"></div>
+            </div>
+            
+            <button id="uploadBtn">Subir Imagen <i class="fas fa-upload"></i></button>
+            
+            <div id="statusMessage" class="status"></div>
         </div>
         
-        <div class="tabs">
-            <div class="tab active" data-tab="videos">Videos</div>
-            <div class="tab" data-tab="photos">Fotos</div>
-            <div class="tab" data-tab="favorites">Favoritos</div>
-        </div>
-        
-        <div class="video-grid" id="videoGrid">
-            <!-- Los videos se cargarán dinámicamente via JavaScript -->
+        <div class="gallery" id="gallery">
+            <!-- Las imágenes se cargarán aquí -->
         </div>
     </div>
-    
-    <!-- REPRODUCTOR DE VIDEO MODAL -->
-    <div class="video-player-modal" id="videoModal">
-        <div class="video-container">
-            <video controls autoplay id="modalVideoPlayer">
-                <source src="" type="video/mp4">
-                Tu navegador no soporta el elemento de video.
-            </video>
-            <button class="close-btn" id="closeModal" aria-label="Cerrar reproductor">&times;</button>
+
+    <!-- Modal para imagen expandida -->
+    <div id="imageModal" class="modal">
+        <span class="close">&times;</span>
+        <div class="modal-content">
+            <img id="expandedImg" class="modal-img" src="" alt="Imagen expandida">
         </div>
-    </div>
-    
-    <!-- BOTÓN DE CHAT -->
-    <button class="chat-button" id="chatButton" aria-label="Abrir chat">
-        <i class="fas fa-comment-dots"></i>
-    </button>
-    
-    <!-- FOOTER CON LOS ICONOS ACTUALIZADOS -->
-    <div class="footer">
-        <button class="footer-icon tooltip active" aria-label="Perfil">
-            <i class="fas fa-user"></i>
-            <span class="tooltip-text">Perfil</span>
-        </button>
-        <button class="footer-icon tooltip" aria-label="Perfiles">
-            <i class="fas fa-users"></i>
-            <span class="tooltip-text">Perfiles</span>
-        </button>
-        <button class="footer-icon tooltip" aria-label="Videocámara">
-            <i class="fas fa-video"></i>
-            <span class="tooltip-text">Videocámara</span>
-        </button>
-        <button class="footer-icon tooltip" aria-label="Mensajes">
-            <i class="fas fa-comments"></i>
-            <span class="tooltip-text">Mensajes</span>
-            <span class="footer-badge">3</span>
-        </button>
-        <button class="footer-icon tooltip" aria-label="Cerrar sesión">
-            <i class="fas fa-sign-out-alt"></i>
-            <span class="tooltip-text">Salir</span>
-        </button>
     </div>
 
     <script>
-        // Estado de la aplicación
-        const appState = {
-            auth: {
-                isAuthenticated: false,
-                userType: 'guest', // 'guest', 'free', 'premium'
-                token: null
-            },
-            currentTab: 'videos',
-            favorites: new Set(),
-            videoData: [
-                {
-                    id: 1,
-                    title: "Sesión Nocturna Exclusiva",
-                    thumbnail: "https://picsum.photos/400/300?random=1",
-                    access: "premium",
-                    views: "1.2K",
-                    likes: 356,
-                    videoUrl: "https://example.com/videos/1.mp4"
-                },
-                {
-                    id: 2,
-                    title: "Rutina de Mañana",
-                    thumbnail: "https://picsum.photos/400/300?random=2",
-                    access: "free",
-                    views: "856",
-                    likes: 210,
-                    videoUrl: "https://example.com/videos/2.mp4"
-                },
-                {
-                    id: 3,
-                    title: "Entrenamiento con Pesas",
-                    thumbnail: "https://picsum.photos/400/300?random=3",
-                    access: "premium",
-                    views: "2.4K",
-                    likes: 589,
-                    videoUrl: "https://example.com/videos/3.mp4"
-                },
-                {
-                    id: 4,
-                    title: "Yoga Relax",
-                    thumbnail: "https://picsum.photos/400/300?random=4",
-                    access: "premium",
-                    views: "1.8K",
-                    likes: 432,
-                    videoUrl: "https://example.com/videos/4.mp4"
-                },
-                {
-                    id: 5,
-                    title: "Q&A Especial",
-                    thumbnail: "https://picsum.photos/400/300?random=5",
-                    access: "premium",
-                    views: "1.5K",
-                    likes: 387,
-                    videoUrl: "https://example.com/videos/5.mp4"
-                },
-                {
-                    id: 6,
-                    title: "Reto 30 Días",
-                    thumbnail: "https://picsum.photos/400/300?random=6",
-                    access: "premium",
-                    views: "3.1K",
-                    likes: 721,
-                    videoUrl: "https://example.com/videos/6.mp4"
-                }
-            ]
-        };
-
+        // Configuración de Cloudinary
+        const cloudName = 'dba9d8';
+        const apiKey = '528757166221984';
+        const unsignedUploadPreset = 'web_upload';
+        
         // Elementos del DOM
-        const DOM = {
-            videoGrid: document.getElementById('videoGrid'),
-            videoModal: document.getElementById('videoModal'),
-            modalVideoPlayer: document.getElementById('modalVideoPlayer'),
-            closeModal: document.getElementById('closeModal'),
-            chatButton: document.getElementById('chatButton'),
-            tabs: document.querySelectorAll('.tab'),
-            loginButton: document.querySelector('.btn-login'),
-            loginBar: document.querySelector('.login-bar')
-        };
-
-        // Inicialización
+        const fileInput = document.getElementById('fileInput');
+        const dropArea = document.getElementById('dropArea');
+        const uploadBtn = document.getElementById('uploadBtn');
+        const preview = document.getElementById('preview');
+        const progressContainer = document.getElementById('progressContainer');
+        const progressBar = document.getElementById('progressBar');
+        const statusMessage = document.getElementById('statusMessage');
+        const gallery = document.getElementById('gallery');
+        const modal = document.getElementById('imageModal');
+        const expandedImg = document.getElementById('expandedImg');
+        const closeBtn = document.querySelector('.close');
+        
+        // Cargar imágenes al iniciar
         document.addEventListener('DOMContentLoaded', () => {
-            renderVideos();
+            loadImagesFromStorage();
             setupEventListeners();
-            checkAuth();
         });
-
-        // Renderizado de videos
-        function renderVideos() {
-            DOM.videoGrid.innerHTML = '';
-            
-            appState.videoData.forEach(video => {
-                const isFavorite = appState.favorites.has(video.id);
-                const isLocked = video.access === 'premium' && !appState.auth.isAuthenticated;
-                
-                const videoCard = document.createElement('div');
-                videoCard.className = `video-card ${isLocked ? 'locked-content' : ''} ${video.access === 'free' ? 'free-content' : ''}`;
-                videoCard.dataset.id = video.id;
-                
-                videoCard.innerHTML = `
-                    ${video.access === 'free' ? '<div class="free-badge">GRATIS</div>' : ''}
-                    <img src="${video.thumbnail}" class="video-thumbnail" loading="lazy" alt="Miniatura: ${video.title}">
-                    <div class="video-info">
-                        <h3 class="video-title">${video.title}</h3>
-                        <div class="video-stats">
-                            <span><i class="fas fa-eye"></i> ${video.views}</span>
-                            <span>
-                                <i class="fas fa-heart ${isFavorite ? 'filled' : ''}" data-action="toggle-favorite"></i> ${video.likes}
-                            </span>
-                        </div>
-                    </div>
-                `;
-                
-                DOM.videoGrid.appendChild(videoCard);
+        
+        function loadImagesFromStorage() {
+            const savedImages = JSON.parse(localStorage.getItem('cloudinary_images')) || [];
+            savedImages.forEach(img => {
+                createGalleryItem(img);
             });
         }
-
-        // Configuración de event listeners
+        
+        function saveImageToStorage(imageData) {
+            const savedImages = JSON.parse(localStorage.getItem('cloudinary_images')) || [];
+            savedImages.push(imageData);
+            localStorage.setItem('cloudinary_images', JSON.stringify(savedImages));
+        }
+        
+        function createGalleryItem(imgData) {
+            const galleryItem = document.createElement('div');
+            galleryItem.className = 'gallery-item';
+            galleryItem.innerHTML = `
+                <img src="${imgData.secure_url}" alt="Imagen subida" class="gallery-img">
+                <div class="gallery-info">
+                    <p><strong>Tamaño:</strong> ${(imgData.bytes/1024).toFixed(1)} KB</p>
+                    <p class="gallery-url">${imgData.public_id || 'Imagen subida'}</p>
+                </div>
+                <button class="copy-btn" title="Copiar URL" data-url="${imgData.secure_url}">
+                    <i class="fas fa-copy"></i>
+                </button>
+            `;
+            
+            gallery.appendChild(galleryItem);
+            
+            // Evento para expandir imagen
+            galleryItem.querySelector('img').addEventListener('click', () => {
+                expandedImg.src = imgData.secure_url;
+                modal.style.display = "flex";
+            });
+            
+            // Evento para copiar URL
+            galleryItem.querySelector('.copy-btn').addEventListener('click', (e) => {
+                e.stopPropagation();
+                copyToClipboard(imgData.secure_url, e.currentTarget);
+            });
+        }
+        
         function setupEventListeners() {
-            // Clic en videos
-            DOM.videoGrid.addEventListener('click', (e) => {
-                const videoCard = e.target.closest('.video-card');
-                if (!videoCard) return;
-                
-                const videoId = parseInt(videoCard.dataset.id);
-                const videoData = appState.videoData.find(v => v.id === videoId);
-                
-                if (videoCard.classList.contains('locked-content')) {
-                    showAuthRequired();
+            // Drag and drop
+            ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, preventDefaults, false);
+            });
+            
+            ['dragenter', 'dragover'].forEach(eventName => {
+                dropArea.addEventListener(eventName, highlight, false);
+            });
+            
+            ['dragleave', 'drop'].forEach(eventName => {
+                dropArea.addEventListener(eventName, unhighlight, false);
+            });
+            
+            dropArea.addEventListener('drop', handleDrop, false);
+            dropArea.addEventListener('click', () => fileInput.click());
+            fileInput.addEventListener('change', handleFileSelect);
+            uploadBtn.addEventListener('click', uploadImage);
+            
+            // Modal
+            closeBtn.addEventListener('click', () => {
+                modal.style.display = "none";
+            });
+            
+            modal.addEventListener('click', (e) => {
+                if (e.target === modal) {
+                    modal.style.display = "none";
+                }
+            });
+        }
+        
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+        
+        function highlight() {
+            dropArea.classList.add('highlight');
+        }
+        
+        function unhighlight() {
+            dropArea.classList.remove('highlight');
+        }
+        
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+            handleFileSelect({ target: fileInput });
+        }
+        
+        function handleFileSelect(e) {
+            const file = e.target.files[0];
+            if (file) {
+                // Validar tipo y tamaño
+                if (!file.type.match('image.*')) {
+                    showStatus('Solo se permiten archivos de imagen', 'error');
                     return;
                 }
                 
-                playVideo(videoData);
-            });
-
-            // Clic en favoritos
-            DOM.videoGrid.addEventListener('click', (e) => {
-                if (e.target.dataset.action === 'toggle-favorite') {
-                    e.stopPropagation();
-                    const videoId = parseInt(e.target.closest('.video-card').dataset.id);
-                    toggleFavorite(videoId);
+                if (file.size > 10 * 1024 * 1024) {
+                    showStatus('La imagen es demasiado grande (máx. 10MB)', 'error');
+                    return;
                 }
-            });
-
-            // Cerrar modal
-            DOM.closeModal.addEventListener('click', closeVideoModal);
+                
+                // Mostrar vista previa
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    preview.src = event.target.result;
+                    preview.style.display = 'block';
+                    uploadBtn.style.display = 'block';
+                    uploadBtn.disabled = false;
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+        
+        async function uploadImage() {
+            const file = fileInput.files[0];
+            if (!file) return;
             
-            // Cambio de pestañas
-            DOM.tabs.forEach(tab => {
-                tab.addEventListener('click', () => {
-                    DOM.tabs.forEach(t => t.classList.remove('active'));
-                    tab.classList.add('active');
-                    appState.currentTab = tab.dataset.tab;
-                    // Aquí iría la lógica para cargar contenido diferente por pestaña
+            uploadBtn.disabled = true;
+            uploadBtn.innerHTML = 'Subiendo... <i class="fas fa-spinner fa-spin"></i>';
+            progressContainer.style.display = 'block';
+            
+            const formData = new FormData();
+            formData.append('file', file);
+            formData.append('upload_preset', unsignedUploadPreset);
+            formData.append('cloud_name', cloudName);
+            formData.append('api_key', apiKey);
+            
+            try {
+                const response = await fetch(`https://api.cloudinary.com/v1_1/${cloudName}/image/upload`, {
+                    method: 'POST',
+                    body: formData
                 });
-            });
-
-            // Botón de chat
-            DOM.chatButton.addEventListener('click', handleChatClick);
-            
-            // Botón de login
-            DOM.loginButton.addEventListener('click', handleLogin);
-        }
-
-        // Funciones de autenticación
-        function checkAuth() {
-            // Simular verificación de token en localStorage
-            const fakeToken = localStorage.getItem('premiumConnectToken');
-            if (fakeToken) {
-                appState.auth = {
-                    isAuthenticated: true,
-                    userType: 'premium',
-                    token: fakeToken
-                };
-                DOM.loginBar.style.display = 'none';
-                renderVideos();
-            }
-        }
-
-        function handleLogin() {
-            const wantLogin = confirm('¿Quieres simular inicio de sesión premium? (Demo)');
-            if (wantLogin) {
-                // Simular token JWT
-                const fakeToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VySWQiOiIxMjM0IiwidXNlclR5cGUiOiJwcmVtaXVtIn0.8QJj6b8T3JYKVZ7vX7X7X7X7X7X7X7X7X7X7X7X7X7X';
                 
-                localStorage.setItem('premiumConnectToken', fakeToken);
-                appState.auth = {
-                    isAuthenticated: true,
-                    userType: 'premium',
-                    token: fakeToken
-                };
+                const data = await response.json();
                 
-                DOM.loginBar.style.display = 'none';
-                renderVideos();
-                alert('✅ Ahora tienes acceso premium a todo el contenido');
-            }
-        }
-
-        function showAuthRequired() {
-            alert('💎 Inicia sesión para acceder a este contenido exclusivo');
-        }
-
-        // Funciones de video
-        function playVideo(videoData) {
-            DOM.modalVideoPlayer.src = videoData.videoUrl;
-            DOM.videoModal.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
-
-        function closeVideoModal() {
-            DOM.videoModal.classList.remove('active');
-            DOM.modalVideoPlayer.pause();
-            DOM.modalVideoPlayer.src = '';
-            document.body.style.overflow = '';
-        }
-
-        // Funciones de favoritos
-        function toggleFavorite(videoId) {
-            if (appState.favorites.has(videoId)) {
-                appState.favorites.delete(videoId);
-            } else {
-                appState.favorites.add(videoId);
-            }
-            renderVideos();
-        }
-
-        // Funciones de chat
-        function handleChatClick() {
-            if (appState.auth.isAuthenticated) {
-                alert('💬 Chat premium activado. ¡Hola Sofia!');
-            } else {
-                const wantChat = confirm('Para chatear con Sofia necesitas una suscripción premium. ¿Quieres iniciar sesión ahora?');
-                if (wantChat) {
-                    handleLogin();
+                if (!response.ok) {
+                    throw new Error(data.error.message || 'Error al subir la imagen');
                 }
+                
+                showStatus('¡Imagen subida con éxito!', 'success');
+                saveImageToStorage(data);
+                createGalleryItem(data);
+                resetUploadForm();
+            } catch (error) {
+                showStatus(`Error: ${error.message}`, 'error');
+            } finally {
+                uploadBtn.disabled = false;
+                uploadBtn.innerHTML = 'Subir Imagen <i class="fas fa-upload"></i>';
             }
         }
-
-        // Manejo de errores
-        window.addEventListener('error', (e) => {
-            console.error('Error:', e.message);
-            // Aquí podríamos mostrar un mensaje amigable al usuario
-        });
+        
+        function resetUploadForm() {
+            fileInput.value = '';
+            preview.style.display = 'none';
+            progressContainer.style.display = 'none';
+            progressBar.style.width = '0%';
+        }
+        
+        function showStatus(message, type) {
+            statusMessage.textContent = message;
+            statusMessage.className = `status ${type}`;
+            statusMessage.style.display = 'block';
+            
+            setTimeout(() => {
+                statusMessage.style.display = 'none';
+            }, 5000);
+        }
+        
+        function copyToClipboard(url, button) {
+            navigator.clipboard.writeText(url).then(() => {
+                const icon = button.querySelector('i');
+                const originalClass = icon.className;
+                icon.className = 'fas fa-check';
+                
+                setTimeout(() => {
+                    icon.className = originalClass;
+                }, 2000);
+            });
+        }
     </script>
 </body>
 </html>
